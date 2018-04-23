@@ -48,7 +48,7 @@ unzip ${OPENCV_VERSION}.zip
 rm ${OPENCV_VERSION}.zip
 
 # download OpenCV extra modules
-https://github.com/opencv/opencv_contrib/archive/${OPENCV_VERSION}.zip
+wget https://github.com/opencv/opencv_contrib/archive/${OPENCV_VERSION}.zip
 unzip ${OPENCV_VERSION}.zip
 rm ${OPENCV_VERSION}.zip
 
