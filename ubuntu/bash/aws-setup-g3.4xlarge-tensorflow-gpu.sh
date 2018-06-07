@@ -22,22 +22,25 @@ sudo ./NVIDIA-Linux-x86_64-367.44.run -silent
 # Check the driver was intstalled correclty
 nvidia-smi
 
-# Install CUDA 8 TODO
-# wget https://developer.nvidia.com/compute/cuda/8.0/Prod2/local_installers/cuda_8.0.61_375.26_linux-run
-# sudo chmod +x cuda_8.0.61_375.26_linux-run
-# sudo ./cuda_8.0.61_375.26_linux-run --driver -silent
-# sudo ./cuda_8.0.61_375.26_linux-run --toolkit -silent
-# sudo ./cuda_8.0.61_375.26_linux-run --samples –silent
+# Install CUDA 9.0
+wget https://developer.nvidia.com/compute/cuda/9.0/Prod/local_installers/cuda_9.0.176_384.81_linux-run
+sudo chmod +x cuda_9.0.176_384.81_linux-run
+sudo ./cuda_9.0.176_384.81_linux-run --driver -silent
+sudo ./cuda_9.0.176_384.81_linux-run --toolkit -silent
+sudo ./cuda_9.0.176_384.81_linux-run --samples –silent
 
-# echo 'export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64"' >> ~/.bashrc
-# echo 'export CUDA_HOME=/usr/local/cuda' >> ~/.bashrc
-# source ~/.bashrc
+# Install CUDA 9.0 patches
+# wget https://developer.nvidia.com/compute/cuda/9.0/Prod/patches/1/cuda_9.0.176.1_linux-run
+# wget https://developer.nvidia.com/compute/cuda/9.0/Prod/patches/2/cuda_9.0.176.2_linux-run
+# sudo chmod +x cuda_9.0.176.1_linux-run
+# sudo chmod +x cuda_9.0.176.2_linux-run
+# sudo ./cuda_9.0.176.1_linux-run
+# sudo ./cuda_9.0.176.2_linux-run
 
-# Install CUDA 9
-sudo apt-get -y install cuda-9-0
-sudo cuda-9-0 --driver -silent
-sudo cuda-9-0 --toolkit -silent
-sudo cuda-9-0 --samples –silent
+
+echo 'export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64"' >> ~/.bashrc
+echo 'export CUDA_HOME=/usr/local/cuda' >> ~/.bashrc
+source ~/.bashrc
 
 # Install CUDNN V5.1+
 wget http://developer.download.nvidia.com/compute/redist/cudnn/v6.0/cudnn-8.0-linux-x64-v6.0.tgz
