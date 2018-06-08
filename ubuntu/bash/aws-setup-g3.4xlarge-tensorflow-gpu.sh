@@ -3,48 +3,35 @@
 # Ubuntu 16.04 LTS      KO                                                     #
 ################################################################################
 
-# Create a handling directory for the process
-mkdir ~/TensorFlow_GPU_Setup_Dir
-cd ~/TensorFlow_GPU_Setup_Dir
-
 # First check that some core packages are installed
 sudo apt-get -y update
-sudo apt-get -y install libglu1-mesa libxi-dev libxmu-dev -y
-sudo apt-get -y install build-essential -y
-sudo apt-get -y install python-pip python-dev -y
-sudo apt-get -y install python-numpy python-scipy –y
+sudo apt-get -y install libglu1-mesa libxi-dev libxmu-dev build-essential gcc toolchain
+# sudo apt-get -y install python-pip python-dev python-numpy python-scipy
 
-# Then get the NVIDIA drivers
-wget http://us.download.nvidia.com/XFree86/Linux-x86_64/367.44/NVIDIA-Linux-x86_64-367.44.run
-sudo chmod +x NVIDIA-Linux-x86_64-367.44.run
-sudo ./NVIDIA-Linux-x86_64-367.44.run -silent
+# I don't know what the fuck I'm doing at this point. Fucking NVIDIA stuff
+wget https://developer.nvidia.com/compute/cuda/9.2/Prod/local_installers/cuda-repo-ubuntu1604-9-2-local_9.2.88-1_amd64
+wget https://developer.nvidia.com/compute/cuda/9.2/Prod/patches/1/cuda-repo-ubuntu1604-9-2-local-cublas-update-1_1.0-1_amd64
+sudo dpkg -i cuda-repo-ubuntu1604-9-2-local_9.2.88-1_amd64.deb
+sudo dpkg -i cuda-repo-ubuntu1604-9-2-local-cublas-update-1_1.0-1_amd64.deb
+sudo apt-key add /var/cuda-repo-ubuntu1604-9-2-local_9.2.88-1_amd64/7fa2af80.pub
+sudo apt-get update
+sudo apt-get install cuda
+export PATH=/usr/local/cuda-9.2/bin${PATH:+:${PATH}}
+export LD_LIBRARY_PATH=/usr/local/cuda-9.2/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
+# da fuck are these
+sudo systemctl enable nvidia-persistenced
+systemctl status nvidia-persistenced
 
-# Check the driver was intstalled correclty
-nvidia-smi
+# Install docker
+sudo apt-add-repository multiverse
+sudo apt update
+sudo apt install nvidia-modprobe
+wget -P /tmp https://github.com/NVIDIA/nvidia-docker/releases/download/v1.0.1/nvidia-docker_1.0.1-1_amd64.deb
+sudo dpkg -i /tmp/nvidia-docker*.deb && rm /tmp/nvidia-docker*.deb
 
-# Install CUDA 9.0
-wget https://developer.nvidia.com/compute/cuda/9.0/Prod/local_installers/cuda_9.0.176_384.81_linux-run
-wget https://developer.nvidia.com/compute/cuda/9.0/Prod/patches/1/cuda_9.0.176.1_linux-run
-wget https://developer.nvidia.com/compute/cuda/9.0/Prod/patches/2/cuda_9.0.176.2_linux-run
-sudo chmod +x cuda_9.0.176_384.81_linux-run
-sudo ./cuda_9.0.176_384.81_linux-run --driver -silent
-sudo ./cuda_9.0.176_384.81_linux-run --toolkit -silent
-sudo ./cuda_9.0.176_384.81_linux-run --samples –silent
-
-echo 'export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64"' >> ~/.bashrc
-echo 'export CUDA_HOME=/usr/local/cuda' >> ~/.bashrc
-source ~/.bashrc
-
-# Install CUDNN V6.0+
-wget http://developer.download.nvidia.com/compute/redist/cudnn/v6.0/cudnn-8.0-linux-x64-v6.0.tgz
-tar –xvzf cudnn-8.0-linux-x64-v6.0.tgz
-sudo cp -r -P cuda/lib64 /usr/local/cuda
-sudo cp cuda/include/cudnn.h /usr/local/cuda/include/
-
-# Install LIBCUPTI-DEV library for CUDA profiling
-sudo apt-get -y install libcupti-dev
-
-# Install Tensorflow
-sudo apt-get -y install python3-pip
-pip3 install tensorflow
-pip3 install tensorflow-gpu
+curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add -
+distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
+curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | sudo tee /etc/apt/sources.list.d/nvidia-docker.list
+sudo apt-get -y update
+sudo apt-get -y install nvidia-docker2
+sudo pkill -SIGHUP dockerd
